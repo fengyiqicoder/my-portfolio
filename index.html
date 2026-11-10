@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alex Rivera | Portfolio</title>
+
+<!-- The AI. Get a free key at https://onetagai.com and paste it below. -->
+<script src="https://onetagai.com/v1.js" data-key="YOUR_ONETAG_KEY"></script>
+
+<style>
+  body { margin: 0; background: #f6f7f9; color: #12151c; font: 18px/1.6 system-ui, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 64px 24px 96px; }
+  h1 { margin: 0; font-size: 48px; letter-spacing: -1px; }
+  .role { margin: 4px 0 24px; font-size: 21px; color: #5b6475; }
+  h2 { margin: 44px 0 10px; font-size: 24px; }
+  .project { padding: 16px 0; border-top: 1px solid #dde1e8; }
+  .project b { display: block; }
+  .ask { margin-top: 44px; padding: 24px; background: #fff; border: 1px solid #dde1e8; border-radius: 16px; }
+  .ask h2 { margin: 0 0 4px; }
+  .ask p { margin: 0 0 14px; color: #5b6475; }
+  .msg { margin: 0 0 10px; padding: 10px 14px; border-radius: 12px; white-space: pre-wrap; }
+  .you { background: #2f6bff; color: #fff; margin-left: 80px; }
+  .ai { background: #f1f3f7; margin-right: 80px; }
+  form { display: flex; gap: 8px; }
+  input { flex: 1; padding: 12px 14px; font: inherit; border: 1px solid #c8ced9; border-radius: 10px; }
+  button { padding: 0 22px; font: inherit; font-weight: 600; color: #fff; background: #2f6bff; border: 0; border-radius: 10px; cursor: pointer; }
+</style>
+</head>
+
+<body>
+<main>
+  <!-- Everything inside #about is what the AI knows about you. Edit it and the answers change. -->
+  <section id="about">
+    <h1>Alex Rivera</h1>
+    <p class="role">Front-end developer in Austin, Texas</p>
+    <p>I build fast, accessible web apps with React and TypeScript. Three years of experience, most recently at a logistics startup where I led the redesign of the driver dashboard.</p>
+
+    <h2>Projects</h2>
+    <div class="project"><b>RouteBoard</b>A live delivery dashboard used by 400 drivers every day. React, TypeScript, Mapbox.</div>
+    <div class="project"><b>Pantry</b>A recipe app that plans a week of meals from what is already in your kitchen. Next.js, 2,000 monthly users.</div>
+    <div class="project"><b>a11y-check</b>An open-source command line tool that finds accessibility problems in a site. 900 stars on GitHub.</div>
+
+    <h2>Contact</h2>
+    <p>Open to full-time roles and freelance work. Email alex@example.com.</p>
+  </section>
+
+  <section class="ask">
+    <h2>Ask about me</h2>
+    <p>An AI that has read this page answers for me.</p>
+    <div id="chat"></div>
+    <form id="form">
+      <input id="question" placeholder="What has Alex built?" autocomplete="off" required>
+      <button>Ask</button>
+    </form>
+  </section>
+</main>
+
+<script>
+  const chat = document.getElementById("chat");
+  const question = document.getElementById("question");
+  const history = [];
+
+  function bubble(who, text) {
+    const p = document.createElement("p");
+    p.className = "msg " + who;
+    p.textContent = text;
+    chat.append(p);
+    return p;
+  }
+
+  document.getElementById("form").onsubmit = async (event) => {
+    event.preventDefault();
+    const text = question.value.trim();
+    question.value = "";
+    bubble("you", text);
+    const reply = bubble("ai", "…");
+    try {
+      const answer = await onetag.ask(text, document.getElementById("about"), {
+        system: "You answer a visitor's questions about the person on this portfolio, using only the page content given as input. Two or three short sentences. If the page does not say, tell them to get in touch by email.",
+        history,
+        maxTokens: 300,
+        stream: (piece) => { if (reply.textContent === "…") reply.textContent = ""; reply.textContent += piece; },
+      });
+      history.push({ role: "user", content: text }, { role: "assistant", content: answer });
+    } catch (error) {
+      reply.textContent = error.message;
+    }
+  };
+</script>
+</body>
+</html>
