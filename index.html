@@ -77,7 +77,7 @@
     const reply = bubble("ai", "…");
     try {
       const answer = await onetag.ask(text, document.getElementById("about"), {
-        system: "You answer a visitor's questions about the person on this portfolio, using only the page content given as input. Two or three short sentences. Call them by their first name, never he or she. If the page does not say, say so plainly and invite the visitor to email them.",
+        system: "You answer a visitor's questions about the person on this portfolio, using only the page content given as input. Answer in the first person, as them. Two or three short sentences. If the page does not say, say so plainly and invite the visitor to email.",
         history,
         maxTokens: 300,
         stream: (piece) => { if (reply.textContent === "…") reply.textContent = ""; reply.textContent += piece; },
